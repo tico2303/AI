@@ -33,19 +33,31 @@ class Node:
 	def __lt__(self, other):
 		#could also add goal_distance
 		""" this is used to sort PriorityQue by (path_cost) or (path_cost + goal_distance)"""
-		if self.goal_distance != None:
+		if self.goal_distance != None and other.goal_distance != None:
 			return (self.path_cost + self.goal_distance) < (other.path_cost + other.goal_distance)
 		return self.path_cost  < other.path_cost
 
+	def __gt__(self, other):
+		if self.goal_distance != None and other.goal_distance != None:
+			return (self.path_cost + self.goal_distance) > (other.path_cost + other.goal_distance)
+		return self.path_cost  > other.path_cost
+
 	def __eq__(self, other):
 		""" tests for equality of Nodes based on state"""
-		if isinstance(other, Node):
-			return self.state == other.state
+		if not isinstance(other, Node):
+			return False
+		return self.state == other.state
 
+	###
+	def __ne__(self, other):
+		if not isinstance(other, Node):
+			return False
+		return self.state != other.state
+	###
 
 	def __repr__(self):
 		st = ''
 		for li in self.state:
 			st += ''.join([str(i) for i in li]) +"\n"
-		return "%s state: \n%s\npath_cost: %r"%(self.__class__.__name__,st, self.path_cost)
+		return "%s state: \n%spath_cost: %r\ngoal_distance: %r\n"%(self.__class__.__name__,st, self.path_cost, self.goal_distance)
 

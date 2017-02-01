@@ -13,7 +13,6 @@ class Tree:
 		child_node.parent = parent_node
 		child_node.solution_path = deepcopy(parent_node.solution_path)
 		child_node.solution_path.append(parent_node)
-
 		child_node.path_cost = parent_node.path_cost + problem.step_cost(parent_node, action)
 		return child_node
 
@@ -23,3 +22,5 @@ class Tree:
 		for action in actionsList:
 			children_list.append(self.child_node(problem, parent_node, action))
 		return children_list
+
+

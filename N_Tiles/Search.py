@@ -2,34 +2,38 @@ from Node import Node
 from Frontier import *
 from Tree import Tree 
 from copy import deepcopy
+from sets import Set
 
 class Search(object):
 	def __init__(self, problem):
-		pass
+		self.problem = problem
+		self.solnode = None
+	def solutionPath(self):
+		raise NotImplementedError
 
 	def run(self):
-		pass
+		raise NotImplementedError
 
-def SolutionPath(solnode):
-	#for node in solnode.solution_path:
-		#print node
-	print("number of solution: ", len(solnode.solution_path))
+	def solution_path(self):
+		print("number of solution: ", len(self.solnode.solution_path))
+		actionList = []
+		if self.solnode:
+			for i in range(0,len(self.solnode.solution_path)):
 
-	for i in range(0,len(solnode.solution_path)):
-		print solnode.solution_path[i]
-		print solnode.solution_path[i].action
-		print("\n\n\n")
+				print self.solnode.solution_path[i]
+				print self.solnode.solution_path[i].action
+				print("\n\n\n")
+				if self.solnode.solution_path[i].action != None:
+					actionList.append(self.solnode.solution_path[i].action)
+			print(self.solnode)
+			print(self.solnode.action)
+			actionList.append(self.solnode.action)
+			print("\n\n\n")
+		print(actionList)
 
-		
-	print(solnode)
-	print(solnode.action)
-	print("\n\n\n")
-
-
-
-
-def UniformCostSearch(problem):
-		node = Node(problem.inital_state)
+class UniformCostSearch(Search):
+	def run(self):
+		node = Node(self.problem.inital_state)
 		node.path_cost = 0
 		que = PriorityQue()
 		que.push(node)
@@ -37,19 +41,36 @@ def UniformCostSearch(problem):
 
 		while True:
 			if que.is_empty():
+				self.solnode = None
 				return "Failed"
 			node = que.pop()
 			print("parent:", node)
-			if problem.is_goal(node.state):
+			if self.problem.is_goal(node.state):
+				self.solnode = node
 				return node
-			explored.append(node)
+			if node not in explored:
+				explored.append(node)
+				print("pushing onto explored node: ", node.state)
+			print("len(explored): ", len(explored))
+			print("len(que): ", len(que.q))
 			tree = Tree(node)
-			for action in problem.actions(node):
-				child = tree.child_node(problem,node, action)
+			for action in self.problem.actions(node):
+				child = tree.child_node(self.problem,node, action)
 				print("child: ", child)
-				if child not in explored:
+				#raw_input()
+				if (child not in explored) and (child not in que):
+					print("Child not in explored or not in que. pushing: ", child.state)
 					que.push(child)
-				#elif child in and que < 
+				elif child in que:
+					q_index = que.index(child)
+					#print("child in que index in q_index: ", q_index)
+					print("que[",q_index,"].path_cost: ", que[q_index].path_cost)
+					print("child.path_cost: ", child.path_cost)
+					if child.path_cost < que[q_index].path_cost:
+						print("*"*10, "child is > que[q_index]")
+						que[q_index] = child
+				print("\n\n")
+
 
 
 def ManhattanDistance(node, goal):
@@ -63,8 +84,60 @@ def ManhattanDistance(node, goal):
 
 
 
-def AstarManhattan(problem):
-	pass
+class AstarManhattan(Search):
+
+	def ManhattanDistance(self, node, goal):
+		distance = 0
+		for y, _ in enumerate(node.state):
+			for x, tile in enumerate(node.state[y]):
+				if tile != "*":
+					distance += abs(node.coordinates[tile][0] -goal.coordinates[tile][0])
+					distance += abs(node.coordinates[tile][1] - goal.coordinates[tile][1])
+		return distance
+
+	def run(self):
+		node = Node(self.problem.inital_state)
+		goal_node = Node(self.problem.goal_state)
+		node.path_cost = 0
+		node.goal_distance = self.ManhattanDistance(node, goal_node)
+		que = PriorityQue()
+		que.push(node)
+		explored = []
+
+		while True:
+			if que.is_empty():
+				self.solnode = None
+				return "Failed"
+			node = que.pop()
+			print("parent:", node)
+			if self.problem.is_goal(node.state):
+				self.solnode = node
+				return node
+			if node not in explored:
+				explored.append(node)
+				print("pushing onto explored node: ", node.state)
+			print("len(explored): ", len(explored))
+			print("len(que): ", len(que.q))
+			tree = Tree(node)
+			for action in self.problem.actions(node):
+				child = tree.child_node(self.problem,node, action)
+				child.goal_distance = self.ManhattanDistance(child, goal_node)
+				print("child: ", child)
+				#raw_input()
+				if (child not in explored) and (child not in que):
+					print("Child not in explored or not in que. pushing: ", child.state)
+					que.push(child)
+				elif child in que:
+					q_index = que.index(child)
+					#print("child in que index in q_index: ", q_index)
+					print("que[",q_index,"].path_cost: ", que[q_index].path_cost)
+					print("child.path_cost: ", child.path_cost)
+
+					if child < que[q_index]:
+						print("*"*10, "child is > que[q_index]")
+						que[q_index] = child
+				print("\n\n")
+
 
 
 

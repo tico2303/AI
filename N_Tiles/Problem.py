@@ -48,18 +48,17 @@ class EightTilesProblem(Problem):
 
 	def __swap(self, node, from_coords, to_coords):
 		""" returns the state after swap coords are tuples (x,y)"""
-		# note indexing for coordinates is (x,y) but for state[y][x]
+		# indexing for coordinates is (x,y) but for state[y][x]
 		temp_node = deepcopy(node)
 		temp = temp_node.state[from_coords[1]][from_coords[0]] 
 		temp_node.state[from_coords[1]][from_coords[0]] = temp_node.state[to_coords[1]][to_coords[0]]
 		temp_node.state[to_coords[1]][to_coords[0]] = temp
-
-		#### should i update ###
 		temp_node.update_coordinates()
 
 		return temp_node.state
 
 	def __is_valid(self, node, action):
+		""" tests for valid actions"""
 		x = 0
 		y = 1
 		star_coords = node.coordinates["*"]
@@ -94,6 +93,7 @@ class EightTilesProblem(Problem):
 				return False
 
 	def is_goal(self, node_state):
+		""" tests if the nodes state is the goal state"""
 		for x, li in enumerate(node_state):
 			for y,_ in enumerate(li):
 				if node_state[x][y] != self.goal_state[x][y]:
@@ -101,7 +101,7 @@ class EightTilesProblem(Problem):
 		return True
 	
 	def result(self, node, action):
-		""" returns a state after any valid actions [up, down, left, right ] have been taken"""
+		""" returns a state after any valid action [up, down, left, right ] have been taken"""
 		if action.lower() == 'up' and self.__is_valid(node, 'up'):
 			return self.__swap(node, node.coordinates["*"], (node.coordinates["*"][0], node.coordinates["*"][1]-1))
 			

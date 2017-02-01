@@ -2,6 +2,7 @@
 class Frontier(object):
 	def __init__(self):
 		self.q = []
+
 	def is_empty(self):
 		pass
 	def pop(self):
@@ -10,6 +11,34 @@ class Frontier(object):
 		pass
 
 class PriorityQue(Frontier):
+
+	def __iter__(self):
+		for el in self.q:
+			yield el
+
+	def find_element(self, el):
+		for i in self.q:
+			print("i:", i)
+			if i == el:
+				return i
+			else:
+				return None
+
+	def index(self, el):
+		return self.q.index(el)
+
+	def __getitem__(self, index):
+		return self.q[index]
+
+	def __setitem__(self, index, value):
+		self.q[index] = value
+
+	def __len__(self):
+		return len(self.q)
+	###
+	def __contains__(self, key):
+		return key in self.q
+	###
 
 	def is_empty(self):
 		if self.q:
@@ -22,4 +51,9 @@ class PriorityQue(Frontier):
 	def push(self, node):
 		self.q.append(node)
 		self.q.sort()
+
+	def front(self):
+		"""just peek at front"""
+		return self.q[0]
+
 
