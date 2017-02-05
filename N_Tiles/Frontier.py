@@ -1,4 +1,4 @@
-
+import bisect
 class Frontier(object):
 	def __init__(self):
 		self.q = []
@@ -35,10 +35,9 @@ class PriorityQue(Frontier):
 
 	def __len__(self):
 		return len(self.q)
-	###
+
 	def __contains__(self, key):
 		return key in self.q
-	###
 
 	def is_empty(self):
 		if self.q:
@@ -49,9 +48,11 @@ class PriorityQue(Frontier):
 		return self.q.pop(0)
 
 	def push(self, node):
-		self.q.append(node)
-		self.q.sort()
-
+		#places node in shorted order
+		# reduces time complexity to O(logn) in
+		# average case
+		
+		bisect.insort(self.q, node)
 	def front(self):
 		"""just peek at front"""
 		return self.q[0]

@@ -46,12 +46,16 @@ class Node:
 		""" tests for equality of Nodes based on state"""
 		if not isinstance(other, Node):
 			return False
-		return self.state == other.state
+		if other.state != None:
+			return self.state == other.state
+		return self == other
 
 	###
 	def __ne__(self, other):
 		if not isinstance(other, Node):
-			return False
+			return True
+		if other.state != None:
+			return self.state != other.state
 		return self.state != other.state
 	###
 

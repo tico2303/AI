@@ -5,6 +5,7 @@ import operator
 class Problem(object):
 	def __init__(self, init_node, goal_node):
 		self.inital_state = init_node.state
+		self.inital_node = init_node
 		self.goal_state = goal_node.state
 
 	def actions(self, node):
@@ -49,6 +50,27 @@ class EightTilesProblem(Problem):
 	def __swap(self, node, from_coords, to_coords):
 		""" returns the state after swap coords are tuples (x,y)"""
 		# indexing for coordinates is (x,y) but for state[y][x]
+		
+		#print("before::node.state: ", node.state)
+		temp_state = deepcopy(node.state)
+		#print("temp_state: ", temp_state)
+
+		star = node.state[from_coords[1]][from_coords[0]]
+		#print("star_coords", star)
+
+		#print("changing to: ", node.state[to_coords[1]][to_coords[0]])
+		temp_state[from_coords[1]][from_coords[0]] = node.state[to_coords[1]][to_coords[0]]
+		#print("temp_state:", temp_state)
+
+		temp_state[to_coords[1]][to_coords[0]] = star
+		#print("temp_state: ", temp_state)
+
+		#print("\n")
+		#print("after::node.state: ", node.state)
+
+		return temp_state	
+
+		"""
 		temp_node = deepcopy(node)
 		temp = temp_node.state[from_coords[1]][from_coords[0]] 
 		temp_node.state[from_coords[1]][from_coords[0]] = temp_node.state[to_coords[1]][to_coords[0]]
@@ -56,6 +78,7 @@ class EightTilesProblem(Problem):
 		temp_node.update_coordinates()
 
 		return temp_node.state
+		"""
 
 	def __is_valid(self, node, action):
 		""" tests for valid actions"""

@@ -11,8 +11,8 @@ class Tree:
 		child_node = Node(problem.result(parent_node, action))
 		child_node.action = action
 		child_node.parent = parent_node
-		child_node.solution_path = deepcopy(parent_node.solution_path)
-		child_node.solution_path.append(parent_node)
+		#child_node.solution_path = deepcopy(parent_node.solution_path)
+		#child_node.solution_path.append(parent_node)
 		child_node.path_cost = parent_node.path_cost + problem.step_cost(parent_node, action)
 		return child_node
 

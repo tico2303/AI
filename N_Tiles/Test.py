@@ -3,6 +3,7 @@ from Node import *
 from Search import *
 import time
 from Frontier import *
+import random
 
 """
 inital_state = [[2, 4, 6],
@@ -31,6 +32,11 @@ test_state2 = [
 				[4,5,6],
 				[7,"*",8]
 				]
+worst_case = [
+			 [8,6,7],
+			 [2,5,4],
+			 [3,"*",1]
+				]
 
 GOAL_STATE = [[1,2,3],
 			  [4,5,6],
@@ -53,7 +59,7 @@ def TestManDist():
 def TestProblem():
 	n = Node(inital_state)
 	goal = Node(GOAL_STATE)
-	n.print_node()
+	print(n)
 	prob = EightTilesProblem(n, goal)
 	print("***Problem Actions***")
 	print(prob.actions(n))		
@@ -61,7 +67,7 @@ def TestProblem():
 	print("\n")
 	print("***Problem result***")
 	print("inital_state: ")
-	n.print_node()
+	print(n)
 	print("\n")
 
 
@@ -69,14 +75,12 @@ def TestProblem():
 
 	#checking out of bounds UP
 	print("up2")
-	prob.result(n, 'up')
-	print(n)
+	print prob.result(n, 'up')
 	print("\n")
 
 ######### DOWN	
 	print("down1")
-	prob.result(n, 'down')
-	print(n)
+	print prob.result(n, 'down')
 	print("\n")
 
 
@@ -85,15 +89,13 @@ def TestProblem():
 	
 	#checking out of bounds LEFT	
 	print("left2")
-	prob.result(n, 'left')
+	print prob.result(n, 'left')
 	print("passed\n")
-	print(n)
 	print("\n")
 
 ######### RIGHT	
 	print("right1")
-	prob.result(n, 'right')
-	print(n)
+	print prob.result(n, 'right')
 	print("\n")
 
 ######### is_goal Test
@@ -242,23 +244,60 @@ def TestNodeNotInExplored():
 
 
 def TestAstarManhattan():
-	n = Node(inital_state)
+	stateList = TestRandomPuzzleGenerator()
+	print stateList
+	raw_input()
+	for i in range(0, len(stateList)):
+		n = Node(stateList[i])
+		goal = Node(GOAL_STATE)
+		prob = EightTilesProblem(n, goal)
+		start = time.time()
+
+		search = AstarManhattan(prob)
+		final_node = search.run()
+		print("*"*15, "Found soution!")
+		search.solution_path()
+		print("time: ", time.time()-start, " \'s")
+		print("\n\n\n")
+
+def TestAstarManhattanWorstCase():
+	n = Node(worst_case)
 	goal = Node(GOAL_STATE)
 	prob = EightTilesProblem(n, goal)
 	start = time.time()
-
 	search = AstarManhattan(prob)
 	final_node = search.run()
 	print("*"*15, "Found soution!")
 	search.solution_path()
 	print("time: ", time.time()-start, " \'s")
+	print("\n\n\n")
 
 
+def TestRandomPuzzleGenerator():
+	actionsList = ['up', 'down', 'left', 'right']
+	n = Node(GOAL_STATE)
+	goal = Node(GOAL_STATE)
+	prob = EightTilesProblem(n, goal)
+	stateList = []
+	for i in range(0, 100):
+		print(random.choice(actionsList))
+		state = prob.result(n,random.choice(actionsList))
+		if state != None:
+			stateList.append(state)
+			n = Node(state)
+	return stateList
 
-
-
-
-
+def TestAstarMisplacedTile():
+	n = Node(inital_state)
+	goal = Node(GOAL_STATE)
+	prob = EightTilesProblem(n, goal)
+	start = time.time()
+	search = AstarMisplacedTile(prob)
+	final_node = search.run()
+	print("*"*15, "Found soution!")
+	search.solution_path()
+	print("time: ", time.time()-start, " \'s")
+	print("\n\n\n")
 #TestNode()
 #TestManDist()
 #TestProblem()
@@ -267,4 +306,9 @@ def TestAstarManhattan():
 #TestUniformSearch()
 #TestFrontier()
 #TestNodeNotInExplored()
+#TestAstarManhattanWorstCase()
+#TestAstarMisplacedTile()
 TestAstarManhattan()
+#TestRandomPuzzleGenerator()
+
+
