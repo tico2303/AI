@@ -34,15 +34,16 @@ class Search(object):
 		print(actionList)
 	"""
 	def solution_path(self):
-		print("Started from: ", self.problem.inital_node)
+		print "Started from: ", self.problem.inital_node
 		node = self.solnode
+		depth = 0
 		if node.parent == None:
-			print("solnode is goal: ", node)
 			return None
 		else:
 			actionList = []
 			nodeList = []
 			while node.parent != None:
+				depth +=1
 				actionList.append(node.action)
 				nodeList.append(node)
 				node = node.parent	
@@ -54,8 +55,8 @@ class Search(object):
 			print("\nActions taken to get to solution:")	
 			for action in actionList:
 				print(action)
-
-		print("!DONE")
+		print "\n"
+		return depth
 
 
 class UniformCostSearch(Search):
@@ -65,38 +66,47 @@ class UniformCostSearch(Search):
 		que = PriorityQue()
 		que.push(node)
 		explored = []
+		max_que_size = len(que)
 
 		while True:
 			if que.is_empty():
 				self.solnode = None
 				return "Failed"
 			node = que.pop()
-			print("parent:", node)
+			if DEBUG:
+				print("parent:", node)
 			if self.problem.is_goal(node.state):
 				self.solnode = node
-				return node
+				return node, len(explored), max_que_size
 			if node not in explored:
 				explored.append(node)
-				print("pushing onto explored node: ", node.state)
-			print("len(explored): ", len(explored))
-			print("len(que): ", len(que.q))
+				if DEBUG:
+					print("pushing onto explored node: ", node.state)
+			if DEBUG:
+				print("len(explored): ", len(explored))
+				print("len(que): ", len(que.q))
 			tree = Tree(node)
 			for action in self.problem.actions(node):
 				child = tree.child_node(self.problem,node, action)
-				print("child: ", child)
+				if DEBUG:
+					print("child: ", child)
 				#raw_input()
 				if (child not in explored) and (child not in que):
-					print("Child not in explored or not in que. pushing: ", child.state)
+					if DEBUG:
+						print("Child not in explored or not in que. pushing: ", child.state)
 					que.push(child)
 				elif child in que:
 					q_index = que.index(child)
 					#print("child in que index in q_index: ", q_index)
-					print("que[",q_index,"].path_cost: ", que[q_index].path_cost)
-					print("child.path_cost: ", child.path_cost)
+					if DEBUG:
+						print("que[",q_index,"].path_cost: ", que[q_index].path_cost)
+						print("child.path_cost: ", child.path_cost)
 					if child.path_cost < que[q_index].path_cost:
-						print("*"*10, "child is > que[q_index]")
+						if DEBUG:
+							print("*"*10, "child is > que[q_index]")
 						que[q_index] = child
-				print("\n\n")
+				if DEBUG:
+					print("\n\n")
 
 
 
@@ -124,18 +134,20 @@ class AstarManhattan(Search):
 		que.push(node)
 		explored = []
 
+		max_que_size = len(que)
+
 		while True:
-			#print("len(que)", len(que))
-			#print("len(explored)", len(explored))
 			if que.is_empty():
 				self.solnode = None
 				return "Failed"
+			if len(que) > max_que_size:
+				max_que_size = len(que)
 			node = que.pop()
 			if DEBUG:
 				print("parent:", node)
 			if self.problem.is_goal(node.state):
 				self.solnode = node
-				return node
+				return node, len(explored), max_que_size
 			if node not in explored:
 				explored.append(node)
 				if DEBUG:
@@ -178,7 +190,8 @@ class AstarMisplacedTile(Search):
 			#print("Comparing:", goal_node.coordinates[num], " to ", )
 			if goal_node.coordinates[num] != node.coordinates[num]:
 				distance +=1
-		print distance
+		if DEBUG:
+			print("distance: ", distance)
 		return distance
 
 	def run(self):
@@ -191,10 +204,12 @@ class AstarMisplacedTile(Search):
 		que = PriorityQue()
 		que.push(node)
 		explored = []
+		max_que_size = len(que)
 
 		while True:
-			print("len(que)", len(que))
-			print("len(explored)", len(explored))
+			if DEBUG:
+				print("len(que)", len(que))
+				print("len(explored)", len(explored))
 			if que.is_empty():
 				self.solnode = None
 				return "Failed"
@@ -203,7 +218,7 @@ class AstarMisplacedTile(Search):
 				print("parent:", node)
 			if self.problem.is_goal(node.state):
 				self.solnode = node
-				return node
+				return node, len(explored), max_que_size
 			if node not in explored:
 				explored.append(node)
 				if DEBUG:

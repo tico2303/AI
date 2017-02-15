@@ -18,7 +18,6 @@ class PriorityQue(Frontier):
 
 	def find_element(self, el):
 		for i in self.q:
-			print("i:", i)
 			if i == el:
 				return i
 			else:
