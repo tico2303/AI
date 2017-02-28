@@ -1,0 +1,14 @@
+# Data will be given in the following format
+
+col 1 | col 2  | col 3 	|...... 
+class | feature| feature|.... arbutary number of features
+1 or 2| IEE 8 place floating point number NOT-Normailzed|
+
+
+all data in this format:
+1.2340000e+010
+
+2.0000000e+000 1.2340000e+010 2.3440000e+000
+1.0000000e+000 6.0668000e+000 5.0770000e+000
+2.0000000e+000 2.3400000e+010 3.6460000e+000
+1.0000000e+000 4.5645400e+010 3.0045000e+000
