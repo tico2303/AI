@@ -4,76 +4,66 @@ import numpy as np
 
 
 class Classifer(object):
-	def fit(x,y):
+	def distance(self, d1,d2):
 		raise NotImplemented
+
 	def predict(x,y):
 		raise NotImplemented
 
 class KnearestNeighbor(Classifer):
-	def __init__(self, data=None):
-		if data!=None:
-			self.data = data
+	def __init__(self):
 		self.neighbors = []
 
-	def distance(self, d1, d2):
-		"""
-		distance = []
-		print d1.shape
-		feature_indices = [x for x in range(1,d1.shape[1])]
-		training_data = d1[:, feature_indices]		
-		for instance in training_data:
-			dist = 0
-			for i,feature in enumerate(instance):
-				dist += abs((d2[i] - feature)**2)
-			dist = math.sqrt(dist)
-			distance.append([instance,dist])
-		print "distance from ", d2, " to ", instance, " is: ",dist
-		return distance
-		"""
+	def distance(self, train, test):
 		# creates a distance matrix
-		return np.sqrt(((d1-d2)**2).sum(axis=1))
+		#featureMatrix1 will be the test vector
+		featureMatrix1 = test[1:test.shape[0]]
 
-	def getNeighbor(self,training_data, test_instance, k=1):
+		featureMatrix2 = train[:,1:train.shape[1]]
+		#print "distance::train: ", train 
+		#print "distance::train.shape: ", train.shape
+
+		return np.sqrt(((featureMatrix1-featureMatrix2)**2).sum(axis=1))
+		#return np.sqrt(((d1-d2)**2).sum(axis=1))[1:]
+
+	def NearestNeighbor(self,training_data, test_instance, k=1):
 		distances = []
 		dist = 0
 		distance = self.distance(training_data,test_instance)
-		print "distance: ", distance
-		#sort by distance
-		
-		print "distance.shape: ", distance.shape
 		neighbors = []
 		for i in range(k):
 			indices = np.where(distance == distance.min())
-			print "indices: ", indices
 			row = zip(indices[0])
-			neighbor = (training_data[row[0],0],distance[row[0]])
-			print "neighbor: ", neighbor	
-			neighbors.append(neighbors)
+			neighbor = (training_data[row[0][0],0],distance[row[0]])
+			#print "neighbor: ", neighbor
+			#print "neighbor: ", neighbor	
+			neighbors.append(neighbor)
 		self.neighbors = neighbors
 		return neighbors
 
-
-
-	def fit(self,x,y):
+	def predict(self,train_data,test_data):
 		""" x is the training data and y is 
 		the classification """
-		for feature in x:
-			pass
-
-	def predict(self,x,y):
-		""" x is the training data and y is 
-		the classification """
-
+		nearst_neighbor = self.NearestNeighbor(train_data, test_data)
+		#returns (classification)
+		return nearst_neighbor[0][0]
 
 
 if __name__ == '__main__':
-	data = preprocess("cs_170_small80.txt")	
+	#data = preprocess("cs_170_small80.txt")	
+	from validator import LeaveOneOutValidator
+	val = LeaveOneOutValidator()
+	d = Data("testData.txt")
+	data = d.preprocess()	
 	#classification, features = data.classFeatureSplit(data)
-	training_data, test_instance = testTrainSplit(data)
+	training_data, test_instance = d.testTrainSplit(data)
 	knn = KnearestNeighbor()
-	#knn.distance(training_data, test_instance[0])
-	
-	neighbors = knn.getNeighbor(training_data,test_instance[0])
+	dist = knn.distance(training_data, test_instance[0])
+	print "distance: ", dist	
+	#neighbors = knn.NearestNeighbor(training_data,test_instance[0])
+	#print "Test instance: ", test_instance[2]
+	#print "Testing predict"
+	#print knn.predict(training_data, test_instance[2])
 	#print neighbors
 
 
