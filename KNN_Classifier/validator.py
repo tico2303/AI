@@ -25,10 +25,4 @@ class LeaveOneOutValidator(Validator):
 			if classification == test[0]:
 				correct_predictions +=1
 		accuracy_score = (float(correct_predictions)/float(total_instances))
-		"""
-		print "*"*30
-		print "precentage correct: ",accuracy_score
-		print "*"*30
-		print "\n\n"
-		"""
 		return accuracy_score

@@ -79,12 +79,6 @@ class BackwardsElimination(Search):
 			new_node = [x for x in node]
 			new_node.pop(i)
 			results.append(new_node)
-		"""		
-		print "results: "	
-		for r in results:
-			print r
-		print "\n\n"
-		"""
 		return results
 		
 	def set_best_accuracy(self, best,accuracy,state):
@@ -115,7 +109,7 @@ class BackwardsElimination(Search):
 					accuracy = self.validator.validate()
 					if 0 in state:
 						state.remove(0)
-						
+
 					print "Using feature(s) ", state, " accuracy is ", accuracy*100
 					local_best = self.set_best_accuracy(local_best, accuracy, state)
 					best_accuracy = self.set_best_accuracy(best_accuracy, accuracy, state)

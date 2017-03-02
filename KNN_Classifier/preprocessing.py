@@ -1,6 +1,5 @@
 import re
 import numpy as np 
-#from sklearn.preprocessing import normalize
 
 class Data(object):
 	def __init__(self, filename):
@@ -12,14 +11,12 @@ class Data(object):
 		features = 3
 		instances = 4
 
-		#arr = np.arange(features*instances).reshape(instances, features)
 		with open(self.filename, 'r') as f:
 			for line in f.readlines():
 				instance = line.strip("\n\r  ").strip("").split(" ")
 				instance = np.array([format(float(feature),'8f') for feature in instance if feature], dtype=np.float64)
 				DataSet.append(instance[0])
 				featureList.append(instance[1:])
-			#featureList = normalize(featureList, axis=0, norm='max')
 			featureList = self.normalize(featureList)
 			DataSet = np.array(DataSet)
 			Data = np.insert(featureList, 0, values=DataSet, axis=1)
@@ -67,11 +64,6 @@ class Data(object):
 			num_samples = data.shape[0]
 			test_data = data[(num_samples*(1-test)):,]
 			train_data = data[(num_samples*test):,]
-			print type(test_data)
-			print type(train_data)
-			print test_data.shape
-			print train_data.shape
-			print "*****"
 
 			return test_data, train_data
 
