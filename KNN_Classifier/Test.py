@@ -1,7 +1,9 @@
 from classifier import KnearestNeighbor
 from validator import LeaveOneOutValidator
+from search import ForwardSelection
+from search import BackwardsElimination
 from preprocessing import Data
-
+import time
 
 def TestValidatorFlow():
 	data = Data("cs_170_small80.txt")
@@ -32,14 +34,64 @@ def TestFeatureSelection():
 
 def TestClassifier():
 	data = Data("cs_170_small80.txt")
-	d = data.selectFeature(data.data, [5,3,7])
+	start = time.time()
+	d = data.selectFeature(data.data, [0,5,3,7])
 	validator = LeaveOneOutValidator(d, KnearestNeighbor)
 	print validator.validate()
+	print "time: ", time.time() -start
+
+def TestForwardSearch():
+	data = Data("cs_170_small80.txt")
+	start = time.time()
+	validator = LeaveOneOutValidator(data.data, KnearestNeighbor)
+	fwdSlct = ForwardSelection(data, validator)	
+	fwdSlct.search()
+	print "time: ", time.time() - start
+
+def TestBackwardsSearch():
+	data = Data("cs_170_small80.txt")
+	start = time.time()
+	validator = LeaveOneOutValidator(data.data, KnearestNeighbor)
+	backEl = BackwardsElimination(data, validator)	
+	backEl.search()
+	print "time: ", time.time() - start
+
+
+def TestMenu():
+	print "Welcome to Robert's Nearest Neigbhor Feature Search Algorithm"
+	filename = raw_input("Enter filename to data: ")
+	data = Data(filename)
+
+	validator = LeaveOneOutValidator(data.data, KnearestNeighbor)
+	print "Choose the Algorithm you'd like to run: (eg. 1)"
+	print "1. Forward Selection"
+	print "2. Backward Elimination"
+
+	algorithm_choice = int(raw_input())
+
+	if algorithm_choice == 1:
+		algorithm = ForwardSelection(data, validator)
+	elif algorithm_choice == 2:
+		algorithm = BackwardsElimination(data, validator)
+
+	print "This dataset has ", data.data.shape[1], " features and ", data.data.shape[0], " instances"
+	algorithm.search()
+
+
+
+
+
 
 #TestValidatorFlow()
 #TestDistance()
 #TestFeatureSelection()
-TestClassifier()
+#TestClassifier()
+#TestForwardSearch()
+#TestBackwardsSearch()
+TestMenu()
+
+
+
 
 
 
